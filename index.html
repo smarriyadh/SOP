@@ -135,7 +135,7 @@ const btn = document.getElementById('submitBtn');
 btn.disabled = true;
 btn.innerText = 'جاري الإرسال...';
 try {
-  const response = await fetch('https://script.google.com/macros/s/AKfycbzs73Aodpm0CxlliY2hB1xFKXKdeuB7eFhsf-pSGU5WeDd9mDa8nYWdFKyXp2Cpzl3E/exec', {
+  const response = await fetch('https://script.google.com/macros/s/AKfycbzlzwp7dEyMKeG_WeDnJz58qtq6xt1szqC0tsk_rdK-JPoitDO0Ov2t9qLsTnJN8YA9/exec', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
