@@ -135,7 +135,7 @@
     btn.disabled = true;
     btn.innerText = 'جاري الإرسال...';
     try {
-      const response = await fetch('YOUR_EXEC_URL', {
+      const response = await fetch('https://script.google.com/macros/s/AKfycbzs73Aodpm0CxlliY2hB1xFKXKdeuB7eFhsf-pSGU5WeDd9mDa8nYWdFKyXp2Cpzl3E/exec', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
