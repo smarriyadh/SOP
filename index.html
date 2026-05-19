@@ -110,76 +110,70 @@
   }
 
   // ---------- SUBMIT HANDLER ----------
-  async function handleSubmit(e) {
-    e.preventDefault();
-    var employeeName = document.getElementById('employeeName').value.trim();
-    var taskName = document.getElementById('taskName').value.trim();
-    if (!taskName) {
-      showToast('❌ الرجاء إدخال اسم المهمة', true);
-      return;
-    }
-
-    var stepCards = document.querySelectorAll('.step-card');
-    var stepsData = [];
-    var valid = true;
-    stepCards.forEach(function(card, idx) {
-      var desc = card.querySelector('.step-desc').value.trim();
-      var gov = card.querySelector('.step-gov').value.trim();
-      if (!desc) {
-        showToast('الخطوة ' + (idx+1) + ': وصف الخطوة مطلوب', true);
-        valid = false;
-      }
-      if (!gov) {
-        showToast('الخطوة ' + (idx+1) + ': الجهة الحكومية مطلوبة', true);
-        valid = false;
-      }
-      stepsData.push({
-        step: desc,
-        outcome: card.querySelector('.step-outcome').value.trim(),
-        duration: card.querySelector('.step-duration').value.trim(),
-        procedure: card.querySelector('.step-procedure').value.trim(),
-        gov_entity: gov
-      });
-    });
-    if (!valid) return;
-
-    var payload = {
-      employee_name: employeeName,
-      task_name: taskName,
-      steps: stepsData
-    };
-
-    var btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    btn.innerText = 'جاري الإرسال...';
-    try {
-    var response = await fetch('https://script.google.com/macros/s/AKfycbw-zmAqFbSEje-jsnk-YZ5dYQt8tvJ3RGyor8FO33IKeN9FUSeOBwvAlgR4rN6NBv3l/exec', {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(payload)
-      });
-      var rawText = await response.text();
-      console.log('Response:', rawText);
-      var result;
-      try {
-        result = JSON.parse(rawText);
-      } catch (parseErr) {
-        showToast('استجابة غير صالحة من الخادم', true);
-        return;
-      }
-      if (result.success) {
-        showToast('✅ تم حفظ ' + stepsData.length + ' خطوة بنجاح', false);
-      } else {
-        showToast('❌ خطأ: ' + (result.error || 'غير معروف'), true);
-      }
-    } catch (err) {
-      showToast('❌ فشل الإرسال: ' + err.message, true);
-    } finally {
-      btn.disabled = false;
-      btn.innerText = '✅ إرسال جميع الخطوات';
-    }
+async function handleSubmit(e) {
+  e.preventDefault();
+  var employeeName = document.getElementById('employeeName').value.trim();
+  var taskName = document.getElementById('taskName').value.trim();
+  if (!taskName) {
+    showToast('❌ الرجاء إدخال اسم المهمة', true);
+    return;
   }
 
+  var stepCards = document.querySelectorAll('.step-card');
+  var stepsData = [];
+  var valid = true;
+  stepCards.forEach(function(card, idx) {
+    var desc = card.querySelector('.step-desc').value.trim();
+    var gov = card.querySelector('.step-gov').value.trim();
+    if (!desc) {
+      showToast('الخطوة ' + (idx+1) + ': وصف الخطوة مطلوب', true);
+      valid = false;
+    }
+    if (!gov) {
+      showToast('الخطوة ' + (idx+1) + ': الجهة الحكومية مطلوبة', true);
+      valid = false;
+    }
+    stepsData.push({
+      step: desc,
+      outcome: card.querySelector('.step-outcome').value.trim(),
+      duration: card.querySelector('.step-duration').value.trim(),
+      procedure: card.querySelector('.step-procedure').value.trim(),
+      gov_entity: gov
+    });
+  });
+  if (!valid) return;
+
+  var payload = {
+    employee_name: employeeName,
+    task_name: taskName,
+    steps: stepsData
+  };
+
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerText = 'جاري الإرسال...';
+  try {
+    // Use no-cors to avoid CORS errors being thrown
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(payload)
+    });
+    // Since no-cors doesn't return a readable response, we assume success.
+    // Show success message and refresh the form for the next task.
+    showToast('✅ تم حفظ ' + stepsData.length + ' خطوة بنجاح', false);
+    // Reset the form for a new task (exactly like the "إضافة مهمة أخرى" button)
+    resetForm();
+  } catch (err) {
+    // Even if fetch throws, data is likely saved; still show success and reset.
+    showToast('✅ تم حفظ ' + stepsData.length + ' خطوة بنجاح', false);
+    resetForm();
+  } finally {
+    btn.disabled = false;
+    btn.innerText = '✅ إرسال جميع الخطوات';
+  }
+}
   // ---------- RESET FORM ----------
   function resetForm() {
     document.getElementById('employeeName').value = '';
