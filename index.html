@@ -131,30 +131,41 @@
       steps: stepsData
     };
 
-    const btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    btn.innerText = 'جاري الإرسال...';
-    try {
-      const response = await fetch('https://script.google.com/macros/s/AKfycbzs73Aodpm0CxlliY2hB1xFKXKdeuB7eFhsf-pSGU5WeDd9mDa8nYWdFKyXp2Cpzl3E/exec', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      const result = await response.json();
-      if (result.success) {
-        showToast(`✅ تم حفظ ${stepsData.length} خطوة بنجاح`, false);
-        // Optional: clear steps but keep task? Better: do nothing, user can manually clear.
-        // For better UX, we don't auto-clear because user might want to add another task via the dedicated button.
-      } else {
-        showToast('❌ خطأ: ' + result.error, true);
-      }
-    } catch (err) {
-      showToast('❌ فشل الإرسال: ' + err.message, true);
-    } finally {
-      btn.disabled = false;
-      btn.innerText = '✅ إرسال جميع الخطوات';
-    }
+const btn = document.getElementById('submitBtn');
+btn.disabled = true;
+btn.innerText = 'جاري الإرسال...';
+try {
+  const response = await fetch('https://script.google.com/macros/s/AKfycbzs73Aodpm0CxlliY2hB1xFKXKdeuB7eFhsf-pSGU5WeDd9mDa8nYWdFKyXp2Cpzl3E/exec', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
   });
+
+  // Get the raw response text first
+  const rawText = await response.text();
+  console.log('Raw response:', rawText);
+
+  // Try to parse as JSON
+  let result;
+  try {
+    result = JSON.parse(rawText);
+  } catch (parseError) {
+    // If response is HTML (e.g., error page or login)
+    showToast('استجابة غير صالحة من الخادم (قد تكون مشكلة في الرابط أو الصلاحيات)', true);
+    return;
+  }
+
+  if (result.success) {
+    showToast(`✅ تم حفظ ${stepsData.length} خطوة بنجاح`, false);
+  } else {
+    showToast('❌ خطأ: ' + (result.error || 'خطأ غير معروف'), true);
+  }
+} catch (err) {
+  showToast('❌ فشل الإرسال: ' + err.message, true);
+} finally {
+  btn.disabled = false;
+  btn.innerText = '✅ إرسال جميع الخطوات';
+}
 
   // Add another task: reset entire form
   document.getElementById('newTaskBtn').addEventListener('click', () => {
