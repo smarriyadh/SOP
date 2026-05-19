@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>توثيق الإجراءات - نظام التوظيف الخارجي</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', 'Tahoma', 'Cairo', system-ui, sans-serif;
+    }
+    body {
+      background: #f0f2f5;
+      margin: 0;
+      padding: 24px 16px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .card {
+      background: white;
+      border-radius: 28px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+      padding: 24px 28px;
+      margin-bottom: 24px;
+      transition: all 0.2s;
+    }
+    h1 {
+      font-size: 1.8rem;
+      color: #1e2a3a;
+      margin: 0 0 8px 0;
+      font-weight: 600;
+    }
+    .subhead {
+      color: #4a627a;
+      margin-bottom: 32px;
+      font-size: 0.95rem;
+      border-right: 4px solid #2c7da0;
+      padding-right: 16px;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-top: 20px;
+      margin-bottom: 6px;
+      color: #0f2b3d;
+      font-size: 0.9rem;
+    }
+    label .optional {
+      font-weight: normal;
+      color: #8b9aad;
+      font-size: 0.8rem;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #cfdfed;
+      border-radius: 16px;
+      font-size: 0.95rem;
+      background: white;
+      transition: 0.2s;
+      font-family: inherit;
+    }
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: #2c7da0;
+      box-shadow: 0 0 0 3px rgba(44,125,160,0.2);
+    }
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+    .row-2col {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .row-2col > div {
+      flex: 1;
+      min-width: 180px;
+    }
+    button {
+      background: #1e6f5c;
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 40px;
+      cursor: pointer;
+      margin-top: 32px;
+      width: 100%;
+      transition: 0.2s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    button:hover {
+      background: #0e5a4a;
+      transform: translateY(-1px);
+    }
+    .file-zone {
+      border: 2px dashed #bfd7e6;
+      background: #fafdff;
+      border-radius: 20px;
+      padding: 16px;
+      text-align: center;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    .file-zone input {
+      display: none;
+    }
+    .file-name {
+      margin-top: 8px;
+      font-size: 0.8rem;
+      color: #2c7da0;
+    }
+    .toast {
+      background: #1e2a3a;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 60px;
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      text-align: center;
+      z-index: 1000;
+      display: none;
+      font-weight: 500;
+    }
+    hr {
+      margin: 20px 0;
+      border: none;
+      border-top: 1px solid #e2edf2;
+    }
+    @media (max-width: 640px) {
+      .card { padding: 18px; }
+      h1 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <h1>📋 توثيق الإجراء اليدوي</h1>
+    <div class="subhead">الرجاء وصف خطوة واحدة من الإجراء الذي تقوم به حالياً. كل نموذج = خطوة واحدة. سيتم مراجعة جميع الإدخالات قبل توحيد الإجراء النهائي.</div>
+    
+    <form id="sopForm">
+      <label>🏷️ اسم الإجراء العام (مثال: استخراج تأشيرة عامل منزلي) <span class="optional">(نص حر)</span></label>
+      <input type="text" id="workflow_name" placeholder="مثال: تسجيل طلب فيزا عبر منصة قوى" required>
+      
+      <div class="row-2col">
+        <div>
+          <label>🔢 رقم الخطوة</label>
+          <input type="number" id="step_number" placeholder="1, 2, 3..." required>
+        </div>
+        <div>
+          <label>🧑‍💼 المسمى الوظيفي لمنفذ الخطوة</label>
+          <input type="text" id="responsible_role" placeholder="مثال: أخصائي امتثال">
+        </div>
+      </div>
+      
+      <label>📝 وصف الخطوة بالتفصيل (ماذا تفعل؟ كيف؟)</label>
+      <textarea id="step_description" placeholder="اذكر كل إجراء بالتفصيل... مثلاً: أدخل إلى منصة قوى، أضغط على طلبات التأشيرات، أرفع صورة جواز السفر، إلخ" required></textarea>
+      
+      <label>📥 البيانات المدخلة (نص حر)</label>
+      <textarea id="input_data" placeholder="مثال: رقم العميل، صورة جواز السفر، رقم عقد العمل"></textarea>
+      
+      <label>📤 المخرجات / النتيجة</label>
+      <textarea id="output_data" placeholder="مثال: رقم طلب التأشيرة، إيصال الدفع، ملف PDF"></textarea>
+      
+      <label>🏛️ المنصة الحكومية (إن وجدت)</label>
+      <input type="text" id="gov_platform" placeholder="قوى / مدد / مقيم / بلدي / أخرى">
+      
+      <label>⚖️ ملاحظات الامتثال (متطلبات الجهات الرقابية)</label>
+      <textarea id="compliance_notes" placeholder="مثال: يجب التأكد من نسبة السعودة قبل رفع الطلب، أو وجود تفويض ساري من العميل"></textarea>
+      
+      <label>📎 مرفق (اختياري) – صورة شاشة أو مستند مثال</label>
+      <div class="file-zone" onclick="document.getElementById('fileInput').click()">
+        📂 اضغط لاختيار ملف
+        <input type="file" id="fileInput" accept=".pdf,.jpg,.png,.docx">
+        <div id="fileNameDisplay" class="file-name"></div>
+      </div>
+      
+      <label>💬 ملاحظات إضافية</label>
+      <textarea id="notes" placeholder="أي شيء تود إضافته"></textarea>
+      
+      <button type="submit">✅ إرسال الخطوة للمراجعة</button>
+    </form>
+  </div>
+</div>
+<div id="toastMsg" class="toast"></div>
+
+<script>
+  let selectedFile = null;
+  const fileInput = document.getElementById('fileInput');
+  const fileNameDisplay = document.getElementById('fileNameDisplay');
+  
+  fileInput.addEventListener('change', function(e) {
+    if (e.target.files.length) {
+      selectedFile = e.target.files[0];
+      fileNameDisplay.innerText = `📎 ${selectedFile.name}`;
+    } else {
+      selectedFile = null;
+      fileNameDisplay.innerText = '';
+    }
+  });
+  
+  document.getElementById('sopForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = {
+      workflow_name: document.getElementById('workflow_name').value.trim(),
+      step_number: document.getElementById('step_number').value,
+      step_description: document.getElementById('step_description').value.trim(),
+      responsible_role: document.getElementById('responsible_role').value.trim(),
+      input_data: document.getElementById('input_data').value.trim(),
+      output_data: document.getElementById('output_data').value.trim(),
+      gov_platform: document.getElementById('gov_platform').value.trim(),
+      compliance_notes: document.getElementById('compliance_notes').value.trim(),
+      notes: document.getElementById('notes').value.trim(),
+      file: selectedFile
+    };
+    
+    // Validation
+    if (!formData.workflow_name || !formData.step_number || !formData.step_description) {
+      showToast("❌ الرجاء ملء الحقول الأساسية: اسم الإجراء، رقم الخطوة، وصف الخطوة", true);
+      return;
+    }
+    
+    // Disable button
+    const btn = document.querySelector('button');
+    btn.disabled = true;
+    btn.innerText = 'جاري الإرسال...';
+    
+    google.script.run
+      .withSuccessHandler(function(result) {
+        showToast(result.message || "تم الحفظ بنجاح. شكراً لمشاركتك!", false);
+        document.getElementById('sopForm').reset();
+        selectedFile = null;
+        fileNameDisplay.innerText = '';
+        btn.disabled = false;
+        btn.innerText = '✅ إرسال الخطوة للمراجعة';
+      })
+      .withFailureHandler(function(error) {
+        showToast("حدث خطأ: " + error.message, true);
+        btn.disabled = false;
+        btn.innerText = '✅ إرسال الخطوة للمراجعة';
+      })
+      .saveSubmission(formData);
+  });
+  
+  function showToast(msg, isError) {
+    const toast = document.getElementById('toastMsg');
+    toast.innerText = msg;
+    toast.style.backgroundColor = isError ? '#b91c1c' : '#1e6f5c';
+    toast.style.display = 'block';
+    setTimeout(() => { toast.style.display = 'none'; }, 4000);
+  }
+</script>
+</body>
+</html>
