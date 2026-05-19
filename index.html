@@ -50,16 +50,16 @@
 
 <script>
   // ---------- CONFIGURATION ----------
-  const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL';   // 🔁 REPLACE WITH YOUR /exec URL
+  var APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL';   // 🔁 REPLACE WITH YOUR /exec URL
 
   // ---------- GLOBALS ----------
-  let stepCounter = 0;
-  const stepsContainer = document.getElementById('stepsContainer');
+  var stepCounter = 0;
+  var stepsContainer = document.getElementById('stepsContainer');
 
   // ---------- CREATE ONE STEP BLOCK ----------
   function createStepBlock() {
-    const idx = stepCounter++;
-    const div = document.createElement('div');
+    var idx = stepCounter++;
+    var div = document.createElement('div');
     div.className = 'step-card';
     div.setAttribute('data-step-idx', idx);
     div.innerHTML = `
@@ -82,8 +82,8 @@
       <label>🏛️ الجهة الحكومية (مهم جداً)</label>
       <input class="step-gov" placeholder="مثال: قوى / مدد / مقيم / اتصال هاتفي بالوزارة" required>
     `;
-    const removeBtn = div.querySelector('.remove-step');
-    removeBtn.addEventListener('click', () => div.remove());
+    var removeBtn = div.querySelector('.remove-step');
+    removeBtn.addEventListener('click', function() { div.remove(); });
     return div;
   }
 
@@ -93,11 +93,11 @@
 
   // ---------- TOAST NOTIFICATION ----------
   function showToast(msg, isError) {
-    const toast = document.getElementById('toastMsg');
+    var toast = document.getElementById('toastMsg');
     toast.innerText = msg;
     toast.style.backgroundColor = isError ? '#b91c1c' : '#1e6f5c';
     toast.style.display = 'block';
-    setTimeout(() => {
+    setTimeout(function() {
       toast.style.display = 'none';
     }, 4000);
   }
@@ -105,25 +105,25 @@
   // ---------- SUBMIT HANDLER ----------
   async function handleSubmit(e) {
     e.preventDefault();
-    const employeeName = document.getElementById('employeeName').value.trim();
-    const taskName = document.getElementById('taskName').value.trim();
+    var employeeName = document.getElementById('employeeName').value.trim();
+    var taskName = document.getElementById('taskName').value.trim();
     if (!taskName) {
       showToast('❌ الرجاء إدخال اسم المهمة', true);
       return;
     }
 
-    const stepCards = document.querySelectorAll('.step-card');
-    const stepsData = [];
-    let valid = true;
-    stepCards.forEach((card, idx) => {
-      const desc = card.querySelector('.step-desc').value.trim();
-      const gov = card.querySelector('.step-gov').value.trim();
+    var stepCards = document.querySelectorAll('.step-card');
+    var stepsData = [];
+    var valid = true;
+    stepCards.forEach(function(card, idx) {
+      var desc = card.querySelector('.step-desc').value.trim();
+      var gov = card.querySelector('.step-gov').value.trim();
       if (!desc) {
-        showToast(`الخطوة ${idx+1}: وصف الخطوة مطلوب`, true);
+        showToast('الخطوة ' + (idx+1) + ': وصف الخطوة مطلوب', true);
         valid = false;
       }
       if (!gov) {
-        showToast(`الخطوة ${idx+1}: الجهة الحكومية مطلوبة`, true);
+        showToast('الخطوة ' + (idx+1) + ': الجهة الحكومية مطلوبة', true);
         valid = false;
       }
       stepsData.push({
@@ -136,24 +136,24 @@
     });
     if (!valid) return;
 
-    const payload = {
+    var payload = {
       employee_name: employeeName,
       task_name: taskName,
       steps: stepsData
     };
 
-    const btn = document.getElementById('submitBtn');
+    var btn = document.getElementById('submitBtn');
     btn.disabled = true;
     btn.innerText = 'جاري الإرسال...';
     try {
-      const response = await fetch(https://script.google.com/macros/s/AKfycbzkD5J1jOQ2GAgP8naXg9GFIlwl3kyWcpi9ilX8y-K3E3y4s_5wXe6_PshM0NnZJBPS/exec, {
+      var response = await fetch(https://script.google.com/macros/s/AKfycbzkD5J1jOQ2GAgP8naXg9GFIlwl3kyWcpi9ilX8y-K3E3y4s_5wXe6_PshM0NnZJBPS/exec, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(payload)
       });
-      const rawText = await response.text();
+      var rawText = await response.text();
       console.log('Response:', rawText);
-      let result;
+      var result;
       try {
         result = JSON.parse(rawText);
       } catch (parseErr) {
@@ -161,7 +161,7 @@
         return;
       }
       if (result.success) {
-        showToast(`✅ تم حفظ ${stepsData.length} خطوة بنجاح`, false);
+        showToast('✅ تم حفظ ' + stepsData.length + ' خطوة بنجاح', false);
       } else {
         showToast('❌ خطأ: ' + (result.error || 'غير معروف'), true);
       }
