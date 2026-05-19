@@ -30,10 +30,10 @@
   <div class="sub">يمكنك إضافة عدة خطوات لنفس المهمة. كل خطوة ستصبح سطراً مستقلاً في قاعدة البيانات.</div>
 
   <form id="taskForm">
-    <label>👤 اسم الموظف (اختياري)</label>
+    <label for="employeeName">👤 اسم الموظف (اختياري)</label>
     <input type="text" id="employeeName" placeholder="اختياري">
 
-    <label>🏷️ اسم المهمة (مثال: إصدار تأشيرة عامل)</label>
+    <label for="taskName">🏷️ اسم المهمة (مثال: إصدار تأشيرة عامل)</label>
     <input type="text" id="taskName" required>
 
     <div id="stepsContainer"></div>
@@ -62,25 +62,32 @@
     var div = document.createElement('div');
     div.className = 'step-card';
     div.setAttribute('data-step-idx', idx);
+    // Use unique IDs for each step's fields to associate labels properly
+    var stepDescId = 'stepDesc_' + idx;
+    var stepOutcomeId = 'stepOutcome_' + idx;
+    var stepDurationId = 'stepDuration_' + idx;
+    var stepProcedureId = 'stepProcedure_' + idx;
+    var stepGovId = 'stepGov_' + idx;
+    
     div.innerHTML = `
       <div class="step-title">
         <span>📌 الخطوة ${idx+1}</span>
         <button type="button" class="remove-step">✖ إزالة</button>
       </div>
-      <label>📝 وصف الخطوة</label>
-      <textarea class="step-desc" placeholder="مثال: سجل الدخول إلى منصة قوى..." required></textarea>
+      <label for="${stepDescId}">📝 وصف الخطوة</label>
+      <textarea id="${stepDescId}" class="step-desc" placeholder="مثال: سجل الدخول إلى منصة قوى..." required></textarea>
       
-      <label>✅ النتيجة / المخرج</label>
-      <textarea class="step-outcome" placeholder="مثال: رقم طلب التأشيرة"></textarea>
+      <label for="${stepOutcomeId}">✅ النتيجة / المخرج</label>
+      <textarea id="${stepOutcomeId}" class="step-outcome" placeholder="مثال: رقم طلب التأشيرة"></textarea>
       
-      <label>⏱️ المدة التقريبية</label>
-      <input class="step-duration" placeholder="مثال: 5 دقائق">
+      <label for="${stepDurationId}">⏱️ المدة التقريبية</label>
+      <input id="${stepDurationId}" class="step-duration" placeholder="مثال: 5 دقائق">
       
-      <label>📜 الإجراء الواجب اتباعه (اختياري)</label>
-      <textarea class="step-procedure" placeholder="مثال: يجب التحقق من نسبة السعودة"></textarea>
+      <label for="${stepProcedureId}">📜 الإجراء الواجب اتباعه (اختياري)</label>
+      <textarea id="${stepProcedureId}" class="step-procedure" placeholder="مثال: يجب التحقق من نسبة السعودة"></textarea>
       
-      <label>🏛️ الجهة الحكومية (مهم جداً)</label>
-      <input class="step-gov" placeholder="مثال: قوى / مدد / مقيم / اتصال هاتفي بالوزارة" required>
+      <label for="${stepGovId}">🏛️ الجهة الحكومية (مهم جداً)</label>
+      <input id="${stepGovId}" class="step-gov" placeholder="مثال: قوى / مدد / مقيم / اتصال هاتفي بالوزارة" required>
     `;
     var removeBtn = div.querySelector('.remove-step');
     removeBtn.addEventListener('click', function() { div.remove(); });
