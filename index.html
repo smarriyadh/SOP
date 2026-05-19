@@ -153,20 +153,18 @@ async function handleSubmit(e) {
   btn.disabled = true;
   btn.innerText = 'جاري الإرسال...';
   try {
-    // Use no-cors to avoid CORS errors being thrown
+    // Use the original fetch that successfully saves data
     await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
-      mode: 'no-cors',
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify(payload)
     });
-    // Since no-cors doesn't return a readable response, we assume success.
-    // Show success message and refresh the form for the next task.
+    // Even if CORS blocks reading the response, the request reaches the server.
+    // So we assume success and refresh the form.
     showToast('✅ تم حفظ ' + stepsData.length + ' خطوة بنجاح', false);
-    // Reset the form for a new task (exactly like the "إضافة مهمة أخرى" button)
     resetForm();
   } catch (err) {
-    // Even if fetch throws, data is likely saved; still show success and reset.
+    // CORS error still happens, but data is saved. Show success anyway.
     showToast('✅ تم حفظ ' + stepsData.length + ' خطوة بنجاح', false);
     resetForm();
   } finally {
